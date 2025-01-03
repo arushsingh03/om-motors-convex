@@ -134,6 +134,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 8,
     color: "#FF0000",
+    textAlign: "center",
   },
   divider: {
     backgroundColor: "#ddd",

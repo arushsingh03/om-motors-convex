@@ -75,16 +75,16 @@ export const RegisterScreen = ({ navigation }: { navigation: any }) => {
                 mode="outlined"
                 style={styles.input}
                 theme={{ colors: { primary: "#FF0000" } }}
-                outlineColor="#000000"
+                outlineColor="#94a3b8"
               />
               <TextInput
-                label="Email"
-                value={form.email}
-                onChangeText={(text) => setForm({ ...form, email: text })}
+                label="Phone"
+                value={form.phone}
+                onChangeText={(text) => setForm({ ...form, phone: text })}
                 mode="outlined"
                 style={styles.input}
                 theme={{ colors: { primary: "#FF0000" } }}
-                outlineColor="#000000"
+                outlineColor="#94a3b8"
               />
               <TextInput
                 label="Password"
@@ -94,7 +94,7 @@ export const RegisterScreen = ({ navigation }: { navigation: any }) => {
                 mode="outlined"
                 style={styles.input}
                 theme={{ colors: { primary: "#FF0000" } }}
-                outlineColor="#000000"
+                outlineColor="#94a3b8"
                 right={
                   <TextInput.Icon
                     icon={() =>
@@ -125,7 +125,7 @@ export const RegisterScreen = ({ navigation }: { navigation: any }) => {
                 mode="outlined"
                 style={styles.input}
                 theme={{ colors: { primary: "#FF0000" } }}
-                outlineColor="#000000"
+                outlineColor="#94a3b8"
                 right={
                   <TextInput.Icon
                     icon={() =>
@@ -147,13 +147,13 @@ export const RegisterScreen = ({ navigation }: { navigation: any }) => {
                 }
               />
               <TextInput
-                label="Phone"
-                value={form.phone}
-                onChangeText={(text) => setForm({ ...form, phone: text })}
+                label="Email"
+                value={form.email}
+                onChangeText={(text) => setForm({ ...form, email: text })}
                 mode="outlined"
                 style={styles.input}
                 theme={{ colors: { primary: "#FF0000" } }}
-                outlineColor="#000000"
+                outlineColor="#94a3b8"
               />
               <TextInput
                 label="Address"
@@ -162,7 +162,7 @@ export const RegisterScreen = ({ navigation }: { navigation: any }) => {
                 mode="outlined"
                 style={styles.input}
                 theme={{ colors: { primary: "#FF0000" } }}
-                outlineColor="#000000"
+                outlineColor="#94a3b8"
                 multiline
                 numberOfLines={3}
               />
@@ -199,10 +199,10 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    marginTop: 85,
+    marginTop: 100,
   },
   contentContainer: {
-    backgroundColor: "rgba(255, 255, 255, 0.95)",
+    backgroundColor: "rgba(255, 255, 255, 0.84)",
     borderRadius: 15,
     padding: 20,
     margin: 20,
@@ -242,6 +242,6 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   loginButton: {
-    borderColor: "#000000",
+    borderColor: "#94a3b8",
   },
 });

@@ -75,7 +75,7 @@ export const LoginScreen = ({ navigation }: { navigation: any }) => {
               mode="outlined"
               style={styles.input}
               theme={{ colors: { primary: "#FF0000" } }}
-              outlineColor="#000000"
+              outlineColor="#94a3b8"
               error={!!emailError}
             />
             <HelperText type="error" visible={!!emailError}>
@@ -90,7 +90,7 @@ export const LoginScreen = ({ navigation }: { navigation: any }) => {
               mode="outlined"
               style={styles.input}
               theme={{ colors: { primary: "#FF0000" } }}
-              outlineColor="#000000"
+              outlineColor="#94a3b8"
               error={!!passwordError}
             />
             <HelperText type="error" visible={!!passwordError}>
@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   contentContainer: {
-    backgroundColor: "rgba(255, 255, 255, 0.95)",
+    backgroundColor: "rgba(255, 255, 255, 0.84)",
     borderRadius: 15,
     padding: 20,
     shadowColor: "#000",
@@ -175,6 +175,6 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   registerButton: {
-    borderColor: "#000000",
+    borderColor: "#94a3b8",
   },
 });

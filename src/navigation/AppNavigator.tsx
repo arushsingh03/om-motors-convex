@@ -1,27 +1,37 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
 import { Button } from "react-native-paper";
+import { View, StyleSheet } from "react-native";
 import { HomeScreen } from "../screens/HomeScreen";
 import { LoginScreen } from "../screens/LoginScreen";
 import { RegisterScreen } from "../screens/RegisterScreen";
 import { NavigationContainer } from "@react-navigation/native";
+import { AddLoadScreen } from "../screens/AddLoadScreen";
 import {
   createStackNavigator,
   StackNavigationProp,
 } from "@react-navigation/stack";
-import { ChatScreen } from "../screens/ChatScreen";
+import { User } from "../types";
 import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
-import { User } from "../types";
+import { ChatScreen } from "../screens/ChatScreen";
+import { ProfileScreen } from "../screens/ProfileScreen";
+import { EditProfileScreen } from "../screens/EditProfileScreen";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
-import { MessageSquareText, LogOut } from "lucide-react-native";
+import {
+  MessageSquareText,
+  LogOut,
+  User as UserIcon,
+} from "lucide-react-native";
 
-// Define the type for your navigation parameters
+// Update the type for your navigation parameters
 type RootStackParamList = {
   Login: undefined;
   Register: undefined;
   Home: undefined;
   Chat: undefined;
+  Profile: undefined;
+  EditProfile: { userId: string };
+  AddLoad: undefined; // Add this line
 };
 
 // Create a typed version of the stack navigator
@@ -42,10 +52,17 @@ export const AppNavigator = () => {
       <Button
         mode="text"
         compact
+        onPress={() => navigation.navigate("Profile")}
+        icon={() => <UserIcon size={20} color="#FF3B30" />}
+      >
+        <></>
+      </Button>
+      <Button
+        mode="text"
+        compact
         onPress={() => navigation.navigate("Chat")}
         icon={() => <MessageSquareText size={20} color="#FF3B30" />}
       >
-        {/* Empty fragment as children */}
         <></>
       </Button>
       <Button
@@ -54,7 +71,6 @@ export const AppNavigator = () => {
         onPress={() => navigation.replace("Login")}
         icon={() => <LogOut size={20} color="#FF3B30" />}
       >
-        {/* Empty fragment as children */}
         <></>
       </Button>
     </View>
@@ -102,6 +118,28 @@ export const AppNavigator = () => {
               component={ChatScreen}
               options={{
                 title: "Messages",
+              }}
+            />
+            <Stack.Screen
+              name="Profile"
+              component={ProfileScreen}
+              options={{
+                title: "Profile",
+              }}
+            />
+            <Stack.Screen
+              name="EditProfile"
+              component={EditProfileScreen}
+              options={{
+                title: "Edit Profile",
+              }}
+            />
+            {/* Add this new screen */}
+            <Stack.Screen
+              name="AddLoad"
+              component={AddLoadScreen}
+              options={{
+                title: "Add Load",
               }}
             />
           </Stack.Navigator>
