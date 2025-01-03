@@ -1,102 +1,180 @@
-import React from 'react';
-import { View, FlatList, StyleSheet } from 'react-native';
-import { Card, Title, Paragraph } from 'react-native-paper';
-import { useQuery } from 'convex/react';
-import { api } from '../../convex/_generated/api';
-import MapView, { Marker } from 'react-native-maps';
-import { SearchDates } from '../types';
+import React from "react";
+import { format } from "date-fns";
+import { useQuery } from "convex/react";
+import { api } from "../../convex/_generated/api";
+import MapView, { Marker } from "react-native-maps";
+import { View, FlatList, StyleSheet } from "react-native";
+import { Card, Title, Text, Divider } from "react-native-paper";
 
 interface LoadListScreenProps {
   isAdmin: boolean;
+  searchParams?: {
+    location: string;
+    dates: {
+      from: Date;
+      to: Date;
+    };
+  };
 }
 
-export const LoadListScreen: React.FC<LoadListScreenProps> = ({ isAdmin }) => {
+export const LoadListScreen: React.FC<LoadListScreenProps> = ({
+  isAdmin,
+  searchParams,
+}) => {
   const loads = useQuery(api.loads.list);
-  const [searchDates, setSearchDates] = React.useState<SearchDates>({
-    from: null,
-    to: null,
-  });
-  const [searchLocation, setSearchLocation] = React.useState('');
 
   const filteredLoads = React.useMemo(() => {
     if (!loads) return [];
-    
+
     if (!isAdmin) {
-      return loads.filter(load => 
-        new Date(load.createdAt).toDateString() === new Date().toDateString()
+      return loads.filter(
+        (load) =>
+          new Date(load.createdAt).toDateString() === new Date().toDateString()
       );
     }
 
-    return loads.filter(load => {
-      if (searchDates.from && searchDates.to) {
+    return loads.filter((load) => {
+      if (searchParams?.dates.from && searchParams?.dates.to) {
         const loadDate = new Date(load.createdAt);
-        if (loadDate < searchDates.from || loadDate > searchDates.to) {
+        if (
+          loadDate < searchParams.dates.from ||
+          loadDate > searchParams.dates.to
+        ) {
           return false;
         }
       }
-      
-      if (searchLocation) {
-        return load.currentLocation.includes(searchLocation) ||
-               load.destinationLocation.includes(searchLocation);
+
+      if (searchParams?.location) {
+        const searchTerm = searchParams.location.toLowerCase();
+        return (
+          load.currentLocation.toLowerCase().includes(searchTerm) ||
+          load.destinationLocation.toLowerCase().includes(searchTerm)
+        );
       }
       return true;
     });
-  }, [loads, searchDates, searchLocation, isAdmin]);
+  }, [loads, searchParams, isAdmin]);
+
+  const renderTableRow = (label: string, value: string) => (
+    <View style={styles.tableRow}>
+      <View style={styles.tableCell}>
+        <Text style={styles.labelText}>{label}</Text>
+      </View>
+      <View style={[styles.tableCell, styles.valueCellBorder]}>
+        <Text style={styles.valueText}>{value}</Text>
+      </View>
+    </View>
+  );
 
   return (
-    <View style={styles.container}>
-      {isAdmin && (
-        <View style={styles.searchContainer}>
-          {/* Add search components */}
-        </View>
-      )}
-      <FlatList
-        data={filteredLoads}
-        renderItem={({ item }) => (
-          <Card style={styles.card}>
+    <FlatList
+      data={filteredLoads}
+      contentContainerStyle={styles.listContainer}
+      renderItem={({ item }) => (
+        <Card style={styles.card} mode="outlined">
+          <Card.Content>
+            <Title style={styles.cardTitle}>Load Details</Title>
+            <Divider style={styles.divider} />
+
+            <View style={styles.table}>
+              {renderTableRow("From Location", item.currentLocation)}
+              {renderTableRow("To Location", item.destinationLocation)}
+              {renderTableRow("Weight", `${item.weight} ${item.weightUnit}`)}
+              {renderTableRow(
+                "Truck Length",
+                `${item.truckLength} ${item.lengthUnit}`
+              )}
+              {renderTableRow("Contact Number", item.contactNumber)}
+              {renderTableRow("Email", item.email)}
+              {renderTableRow(
+                "Added On",
+                format(new Date(item.createdAt), "MMM dd, yyyy")
+              )}
+              {renderTableRow(
+                "Time",
+                format(new Date(item.createdAt), "hh:mm a")
+              )}
+            </View>
+
             {!isAdmin && (
-              <MapView
-                style={styles.map}
-                initialRegion={{
-                  latitude: item.coordinates.current.latitude,
-                  longitude: item.coordinates.current.longitude,
-                  latitudeDelta: 0.0922,
-                  longitudeDelta: 0.0421,
-                }}
-              >
-                <Marker coordinate={item.coordinates.current} />
-                <Marker coordinate={item.coordinates.destination} />
-              </MapView>
+              <View style={styles.mapContainer}>
+                <MapView
+                  style={styles.map}
+                  initialRegion={{
+                    latitude: item.coordinates.current.latitude,
+                    longitude: item.coordinates.current.longitude,
+                    latitudeDelta: 0.0922,
+                    longitudeDelta: 0.0421,
+                  }}
+                >
+                  <Marker coordinate={item.coordinates.current} />
+                  <Marker coordinate={item.coordinates.destination} />
+                </MapView>
+              </View>
             )}
-            <Card.Content>
-              <Title>{item.currentLocation} → {item.destinationLocation}</Title>
-              <Paragraph>Weight: {item.weight} {item.weightUnit}</Paragraph>
-              <Paragraph>Length: {item.truckLength} {item.lengthUnit}</Paragraph>
-              <Paragraph>Contact: {item.contactNumber}</Paragraph>
-            </Card.Content>
-          </Card>
-        )}
-        keyExtractor={item => item._id.toString()}
-      />
-    </View>
+          </Card.Content>
+        </Card>
+      )}
+      keyExtractor={(item) => item._id.toString()}
+    />
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  listContainer: {
     padding: 16,
   },
   card: {
     marginBottom: 16,
+    elevation: 4,
+    borderRadius: 8,
+  },
+  cardTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 8,
+    color: "#FF0000",
+  },
+  divider: {
+    backgroundColor: "#ddd",
+    height: 1,
+    marginVertical: 8,
+  },
+  table: {
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 4,
+    overflow: "hidden",
+    marginTop: 8,
+  },
+  tableRow: {
+    flexDirection: "row",
+    borderBottomWidth: 1,
+    borderBottomColor: "#ddd",
+  },
+  tableCell: {
+    padding: 12,
+    justifyContent: "center",
+  },
+  labelText: {
+    fontWeight: "bold",
+    color: "#333",
+    width: 120,
+  },
+  valueText: {
+    color: "#666",
+  },
+  valueCellBorder: {
+    flex: 1,
+    borderLeftWidth: 1,
+    borderLeftColor: "#ddd",
+  },
+  mapContainer: {
+    marginTop: 16,
+    borderRadius: 8,
+    overflow: "hidden",
   },
   map: {
     height: 200,
-    marginBottom: 8,
   },
-  searchContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 16,
-  }
 });
